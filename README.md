@@ -1,4 +1,4 @@
-# hyepersigil-render
+# hypersigil-render
 
 A browser-native visual runtime for futuristic rendering in WebGPU + WebXR.
 

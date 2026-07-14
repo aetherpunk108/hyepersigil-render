@@ -20,7 +20,7 @@ async function bootstrap(): Promise<void> {
     const message = error instanceof Error ? error.message : String(error);
     status.textContent = `Runtime unavailable: ${message}`;
     status.style.background = "rgba(64, 6, 14, 0.85)";
-    console.error("[hyepersigil-render]", error);
+    console.error("[hypersigil-render]", error);
   }
 }
 
