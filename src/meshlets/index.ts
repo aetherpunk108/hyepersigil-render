@@ -7,6 +7,8 @@ export interface MeshletDrawResources {
 }
 
 const VERTEX_STRIDE = 24;
+const BUFFER_USAGE_VERTEX = 0x20;
+const BUFFER_USAGE_COPY_DST = 0x8;
 
 const SHADER = /* wgsl */ `
 struct VertexOut {
@@ -65,7 +67,7 @@ export function createMeshletDrawResources(device: GPUDevice, format: GPUTexture
   const vertexBuffer = device.createBuffer({
     label: "meshlet-placeholder-triangle",
     size: data.byteLength,
-    usage: 0x20 | 0x8
+    usage: BUFFER_USAGE_VERTEX | BUFFER_USAGE_COPY_DST
   });
   device.queue.writeBuffer(vertexBuffer, 0, data);
 
