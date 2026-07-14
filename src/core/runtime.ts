@@ -1,17 +1,17 @@
 import { buildViewStates, createCameraState, updateCameraState } from "../camera/camera";
 import { createDebugModule, createDebugOverlay } from "../debug";
-import { createImpostorsModule } from "../impostors";
+import { createImpostorsModule, createImpostorDrawResources } from "../impostors";
 import { createMCPModule } from "../mcp";
 import { createMeshletDrawResources, createMeshletsModule } from "../meshlets";
-import { createPointfieldModule } from "../pointfield";
+import { createPointfieldDrawResources, createPointfieldModule } from "../pointfield";
 import { createPostFXModule } from "../postfx";
 import { createSceneState, updateSceneState } from "../scene/scene";
-import { createSplatsModule } from "../splats";
+import { createSplatDrawResources, createSplatsModule } from "../splats";
 import { createVisibilityModule, runVisibilityPass } from "../visibility";
 import { createXRModule } from "../xr";
 import { createRuntimeConfig } from "./config";
 import type { Representation, RuntimeConfig, RuntimeModule } from "./contracts";
-import { renderFrame } from "./renderer";
+import { createFrameRenderer } from "./renderer";
 import { initializeWebGPU } from "./webgpu";
 
 export interface RuntimeApp {
@@ -51,7 +51,11 @@ export function createRuntimeApp(canvas: HTMLCanvasElement, configOverrides: Par
   return {
     async start() {
       const gpu = await initializeWebGPU(canvas);
-      const meshletDrawResources = createMeshletDrawResources(gpu.device, gpu.format);
+      const frameRenderer = createFrameRenderer(gpu);
+      const meshletDrawResources = createMeshletDrawResources(gpu.device);
+      const splatDrawResources = createSplatDrawResources(gpu.device);
+      const pointfieldDrawResources = createPointfieldDrawResources(gpu.device);
+      const impostorDrawResources = createImpostorDrawResources(gpu.device);
 
       for (const module of modules) {
         await module.initialize?.();
@@ -77,9 +81,12 @@ export function createRuntimeApp(canvas: HTMLCanvasElement, configOverrides: Par
           module.update?.({ now, deltaMs, config });
         }
 
-        renderFrame(canvas, gpu, config, {
+        frameRenderer.render(canvas, config, {
           visibility,
-          meshlets: meshletDrawResources
+          meshlets: meshletDrawResources,
+          splats: splatDrawResources,
+          pointfield: pointfieldDrawResources,
+          impostors: impostorDrawResources
         });
 
         const representationCounts = createRepresentationCounts();

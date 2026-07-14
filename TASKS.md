@@ -1,26 +1,26 @@
 # Tasks
 
 ## Phase 1 - Foundation
-- [ ] Set up browser app entrypoint
-- [ ] Add WebGPU device initialization
-- [ ] Add camera and scene scaffolding
-- [ ] Add basic debug UI and stats
+- [x] Set up browser app entrypoint
+- [x] Add WebGPU device initialization
+- [x] Add camera and scene scaffolding
+- [x] Add basic debug UI and stats
 
 ## Phase 2 - Hybrid rendering core
-- [ ] Add meshlet pipeline
-- [ ] Add splat pipeline scaffold
-- [ ] Add point / voxel reservoir scaffold
-- [ ] Add impostor fallback scaffold
-- [ ] Add representation router
+- [x] Add meshlet pipeline
+- [x] Add splat pipeline scaffold
+- [x] Add point / voxel reservoir scaffold
+- [x] Add impostor fallback scaffold
+- [x] Add representation router
 
 ## Phase 3 - XR and stereo
-- [ ] Add mono / stereo camera abstraction
-- [ ] Add WebXR session support
+- [x] Add mono / stereo camera abstraction
+- [x] Add WebXR session support
 - [ ] Add per-eye rendering flow
 - [ ] Add stereo-aware culling and composition
 
 ## Phase 4 - Post-processing
-- [ ] Add tone mapping
+- [x] Add tone mapping
 - [ ] Add exposure and gamma
 - [ ] Add dithering
 - [ ] Add bloom / grading hooks

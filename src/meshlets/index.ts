@@ -1,4 +1,5 @@
 import type { RuntimeModule } from "../core/contracts";
+import { DEPTH_FORMAT, HDR_FORMAT } from "../core/renderer";
 
 export interface MeshletDrawResources {
   pipeline: GPURenderPipeline;
@@ -30,10 +31,11 @@ fn fs_main(in : VertexOut) -> @location(0) vec4f {
 }
 `;
 
-export function createMeshletDrawResources(device: GPUDevice, format: GPUTextureFormat): MeshletDrawResources {
+export function createMeshletDrawResources(device: GPUDevice): MeshletDrawResources {
   const shader = device.createShaderModule({ code: SHADER });
 
   const pipeline = device.createRenderPipeline({
+    label: "meshlets-placeholder",
     layout: "auto",
     vertex: {
       module: shader,
@@ -51,10 +53,13 @@ export function createMeshletDrawResources(device: GPUDevice, format: GPUTexture
     fragment: {
       module: shader,
       entryPoint: "fs_main",
-      targets: [{ format }]
+      targets: [{ format: HDR_FORMAT }]
     },
-    primitive: {
-      topology: "triangle-list"
+    primitive: { topology: "triangle-list" },
+    depthStencil: {
+      format: DEPTH_FORMAT,
+      depthWriteEnabled: true,
+      depthCompare: "less"
     }
   });
 

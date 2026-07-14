@@ -15,7 +15,7 @@ async function bootstrap(): Promise<void> {
   const app = createRuntimeApp(canvas);
   try {
     await app.start();
-    status.textContent = "WebGPU runtime active (meshlets placeholder + visibility/frame graph scaffold).";
+    status.textContent = "WebGPU runtime active (meshlets + splats + pointfield + impostors scaffolds, ACES tone mapping, WebXR session support).";
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     status.textContent = `Runtime unavailable: ${message}`;

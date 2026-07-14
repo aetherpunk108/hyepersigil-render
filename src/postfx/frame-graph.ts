@@ -2,7 +2,12 @@ import type { WebGPUContext } from "../core/webgpu";
 
 export interface FrameGraphPassContext {
   gpu: WebGPUContext;
+  /** Swap-chain view — final output written here by the tone-mapping pass. */
   colorView: GPUTextureView;
+  /** HDR offscreen view — all scene passes render into this. */
+  hdrView: GPUTextureView;
+  /** Depth view — shared across all scene passes in a frame. */
+  depthView: GPUTextureView;
 }
 
 export interface FrameGraphPass {
