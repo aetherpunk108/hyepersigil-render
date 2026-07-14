@@ -30,14 +30,17 @@ This repository starts as a scaffold for:
 - validation and benchmark plans
 - future browser demo implementation
 
-## Browser scaffold (phase 1)
+## Browser scaffold (phase 2 baseline)
 
-This branch includes the first real browser runtime layer:
+This branch includes:
 - `index.html` shell + `src/main.ts` entrypoint
 - WebGPU initialization with graceful failure messaging
-- scene/camera/update loop scaffold
-- modular runtime stubs for `meshlets`, `splats`, `pointfield`, `impostors`, `postfx`, `xr`, `mcp`, `visibility`, `debug`
-- baseline render path that clears the canvas every frame
+- scene object model (`transform`, `bounds`, `materialTags`)
+- mono camera + stereo-ready view structs (XR wiring still stubbed)
+- representation router v1 + visibility pass outputs per view
+- frame graph scaffold (`clear -> meshlets placeholder -> postfx placeholder`)
+- minimal meshlets placeholder draw path with single test geometry
+- debug overlay for active representation counts, frame timing, and fallback reason
 
 ### Local run
 
@@ -48,4 +51,12 @@ npm run dev
 
 Then open the local Vite URL in a WebGPU-capable browser.
 
-For project organization details, see `docs/browser-scaffold.md`.
+### Validation commands
+
+```bash
+npm test
+npm run build
+npm run smoke:browser
+```
+
+For module contract details and extension guidance, see `docs/browser-scaffold.md`.

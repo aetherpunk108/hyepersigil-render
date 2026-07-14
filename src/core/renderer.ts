@@ -1,5 +1,14 @@
 import type { RuntimeConfig } from "./contracts";
 import type { WebGPUContext } from "./webgpu";
+import { drawMeshletPlaceholder, type MeshletDrawResources } from "../meshlets";
+import { registerPostFXPasses } from "../postfx";
+import { createFrameGraph } from "../postfx/frame-graph";
+import type { VisibilityPassOutput } from "../visibility";
+
+export interface FrameRenderInput {
+  visibility: VisibilityPassOutput[];
+  meshlets: MeshletDrawResources;
+}
 
 function resizeCanvas(canvas: HTMLCanvasElement): boolean {
   const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
@@ -13,22 +22,64 @@ function resizeCanvas(canvas: HTMLCanvasElement): boolean {
   return false;
 }
 
-export function renderFrame(canvas: HTMLCanvasElement, gpu: WebGPUContext, config: RuntimeConfig): void {
+function hasMeshletWork(outputs: VisibilityPassOutput[]): boolean {
+  return outputs.some((viewOutput) =>
+    viewOutput.visibleObjects.some((visible) => visible.decision.representation === "meshlets")
+  );
+}
+
+export function renderFrame(
+  canvas: HTMLCanvasElement,
+  gpu: WebGPUContext,
+  config: RuntimeConfig,
+  frame: FrameRenderInput
+): void {
   resizeCanvas(canvas);
 
-  const encoder = gpu.device.createCommandEncoder();
-  const view = gpu.context.getCurrentTexture().createView();
-  const pass = encoder.beginRenderPass({
-    colorAttachments: [
-      {
-        view,
-        clearValue: config.clearColor,
-        loadOp: "clear",
-        storeOp: "store"
-      }
-    ]
-  });
-  pass.end();
+  const colorView = gpu.context.getCurrentTexture().createView();
+  const graph = createFrameGraph();
 
-  gpu.device.queue.submit([encoder.finish()]);
+  graph.register({
+    name: "clear-pass",
+    execute({ gpu: contextGpu, colorView: contextColorView }) {
+      const encoder = contextGpu.device.createCommandEncoder();
+      const pass = encoder.beginRenderPass({
+        colorAttachments: [
+          {
+            view: contextColorView,
+            clearValue: config.clearColor,
+            loadOp: "clear",
+            storeOp: "store"
+          }
+        ]
+      });
+      pass.end();
+      contextGpu.device.queue.submit([encoder.finish()]);
+    }
+  });
+
+  graph.register({
+    name: "meshlets-placeholder-pass",
+    execute({ gpu: contextGpu, colorView: contextColorView }) {
+      if (!hasMeshletWork(frame.visibility)) {
+        return;
+      }
+      const encoder = contextGpu.device.createCommandEncoder();
+      const pass = encoder.beginRenderPass({
+        colorAttachments: [
+          {
+            view: contextColorView,
+            loadOp: "load",
+            storeOp: "store"
+          }
+        ]
+      });
+      drawMeshletPlaceholder(pass, frame.meshlets);
+      pass.end();
+      contextGpu.device.queue.submit([encoder.finish()]);
+    }
+  });
+
+  registerPostFXPasses(graph);
+  graph.execute({ gpu, colorView });
 }

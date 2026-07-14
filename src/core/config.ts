@@ -19,7 +19,7 @@ const DEFAULT_ROUTING: RepresentationRoutingConfig = {
 export const DEFAULT_CONFIG: RuntimeConfig = {
   clearColor: { r: 0.02, g: 0.03, b: 0.06, a: 1.0 },
   routing: DEFAULT_ROUTING,
-  debug: { overlay: false }
+  debug: { overlay: true }
 };
 
 export function createRuntimeConfig(overrides: Partial<RuntimeConfig> = {}): RuntimeConfig {
