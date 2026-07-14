@@ -1,0 +1,12 @@
+# Build artifacts
+node_modules/
+dist/
+build/
+.DS_Store
+
+# Logs
+*.log
+
+# Env
+.env
+.env.*

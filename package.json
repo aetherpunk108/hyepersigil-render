@@ -1,0 +1,11 @@
+{
+  "name": "hyepersigil-render",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"TODO: add dev server\"",
+    "build": "echo \"TODO: add build pipeline\"",
+    "test": "echo \"TODO: add tests\""
+  }
+}
